@@ -1,0 +1,11 @@
+backports.tarfile
+importlib-metadata
+jaraco.collections
+matplotlib
+pandas
+pandas-stubs
+pip-chill
+pip-review
+platformdirs
+tomli
+torch
