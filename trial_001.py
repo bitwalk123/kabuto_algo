@@ -1,67 +1,27 @@
+import os
 import re
+import sys
 
 import pandas as pd
 
 from intraday_rl_trading_20250811 import train_on_day
 
 if __name__ == '__main__':
-    df = pd.DataFrame({
-        "Date": [],
-        "Code": [],
-        "Profit": [],
-        "Trades": [],
-    })
-    df = df.astype(object)
     out = "result.csv"
+    if os.path.exists(out):
+        df = pd.read_csv(out)
+    else:
+        df = pd.DataFrame({
+            "Date": [],
+            "Code": [],
+            "Profit": [],
+            "Trades": [],
+        })
+        df = df.astype(object)
+    print(df)
+
     list_csv = [
-        "data/tick_20250602_7011.csv",
-        "data/tick_20250603_7011.csv",
-        "data/tick_20250604_7011.csv",
-        "data/tick_20250605_7011.csv",
-        "data/tick_20250606_7011.csv",
-        "data/tick_20250609_7011.csv",
-        "data/tick_20250610_7011.csv",
-        "data/tick_20250611_7011.csv",
-        "data/tick_20250612_7011.csv",
-        "data/tick_20250613_7011.csv",
-        "data/tick_20250617_7011.csv",
-        "data/tick_20250618_7011.csv",
-        "data/tick_20250619_7011.csv",
-        "data/tick_20250620_7011.csv",
-        "data/tick_20250623_7011.csv",
-        "data/tick_20250624_7011.csv",
-        "data/tick_20250625_7011.csv",
-        "data/tick_20250626_7011.csv",
-        "data/tick_20250627_7011.csv",
-        "data/tick_20250630_7011.csv",
-        "data/tick_20250701_7011.csv",
-        "data/tick_20250702_7011.csv",
-        "data/tick_20250703_7011.csv",
-        "data/tick_20250704_7011.csv",
-        "data/tick_20250707_7011.csv",
-        "data/tick_20250708_7011.csv",
-        "data/tick_20250709_7011.csv",
-        "data/tick_20250710_7011.csv",
-        "data/tick_20250711_7011.csv",
-        "data/tick_20250714_7011.csv",
-        "data/tick_20250715_7011.csv",
-        "data/tick_20250716_7011.csv",
-        "data/tick_20250717_7011.csv",
-        "data/tick_20250718_7011.csv",
-        "data/tick_20250722_7011.csv",
-        "data/tick_20250723_7011.csv",
-        "data/tick_20250724_7011.csv",
-        "data/tick_20250725_7011.csv",
-        "data/tick_20250728_7011.csv",
-        "data/tick_20250729_7011.csv",
-        "data/tick_20250730_7011.csv",
-        "data/tick_20250731_7011.csv",
-        "data/tick_20250801_7011.csv",
-        "data/tick_20250804_7011.csv",
-        "data/tick_20250805_7011.csv",
-        "data/tick_20250806_7011.csv",
-        "data/tick_20250807_7011.csv",
-        "data/tick_20250808_7011.csv",
+        "data/tick_20250812_7011.csv",
     ]
     model = "models/7011_ac.pt"
     pattern = re.compile(r".+([0-9]{4})([0-9]{2})([0-9]{2})_([0-9A-Z]{4})\.csv")
@@ -101,4 +61,4 @@ if __name__ == '__main__':
         )
 
     print(df)
-    df.to_csv(out)
+    df.to_csv(out, index=False)
