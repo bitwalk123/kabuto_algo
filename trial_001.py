@@ -4,7 +4,7 @@ import sys
 
 import pandas as pd
 
-from intraday_rl_trading_20250811 import train_on_day
+from rl_tick_dqn_20250811 import train_on_day
 
 if __name__ == '__main__':
     out = "result.csv"
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     print(df)
 
     list_csv = [
-        "data/tick_20250812_7011.csv",
+        "data/tick_20250815_7011.csv",
     ]
     model = "models/7011_ac.pt"
     pattern = re.compile(r".+([0-9]{4})([0-9]{2})([0-9]{2})_([0-9A-Z]{4})\.csv")
