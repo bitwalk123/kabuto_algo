@@ -4,5 +4,6 @@ pandas
 pandas-stubs
 pip-chill
 pip-review
+scipy
 torch
 xlrd
