@@ -3,7 +3,12 @@ import pandas as pd
 from tl_tick_20250819_ppo_lite_2 import TradingSimulation
 
 if __name__ == "__main__":
+    # 学習対象のティックデータファイル: Time, Price, Volume の 3 列
     excel_file = "data/tick_20250819_7011.xlsx"
+    # for learning curve
+    df_lc = pd.DataFrame({"Epoch": list(), "Profit": list()})
+
+    # 学習回数
     epochs = 100
 
     # ティックデータを読み込む
@@ -29,6 +34,11 @@ if __name__ == "__main__":
 
         # 結果を保存
         df_result = sim.finalize()
-        # print("Epoch", epoch, "収益", df_result["報酬額"].sum())
-        print("Epoch", epoch, "収益", df_result["Reward"].sum())
+        profit = df_result["Reward"].sum()
+        print("Epoch", epoch, "収益", profit)
         df_result.to_csv(f"results/trade_results_{epoch:02}.csv")
+        # for plot of learning curve
+        df_lc.at[epoch, "Epoch"] = epoch
+        df_lc.at[epoch, "Profit"] = profit
+
+    df_lc.to_csv(f"results/learning_curve.csv")
