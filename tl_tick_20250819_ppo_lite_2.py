@@ -28,7 +28,7 @@ class ActorCritic(nn.Module):
 
 
 class TradingSimulation:
-    def __init__(self, model_path="ppo_trading_model.pt", lr=1e-3, gamma=0.99):
+    def __init__(self, model_path="models/ppo_trading_model_20250819", lr=1e-3, gamma=0.99):
         self.model_path = model_path
         self.gamma = gamma
 
