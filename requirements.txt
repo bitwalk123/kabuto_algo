@@ -1,11 +1,8 @@
-backports.tarfile
-importlib-metadata
-jaraco.collections
 matplotlib
+openpyxl
 pandas
 pandas-stubs
 pip-chill
 pip-review
-platformdirs
-tomli
 torch
+xlrd
