@@ -37,6 +37,7 @@ if __name__ == "__main__":
         profit = df_result["Reward"].sum()
         print("Epoch", epoch, "収益", profit)
         df_result.to_csv(f"results/trade_results_{epoch:02}.csv")
+
         # for plot of learning curve
         df_lc.at[epoch, "Epoch"] = epoch
         df_lc.at[epoch, "Profit"] = profit

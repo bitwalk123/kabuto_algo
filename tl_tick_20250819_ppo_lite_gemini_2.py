@@ -308,7 +308,8 @@ if __name__ == "__main__":
 
         # 結果を保存
         df_result = sim.finalize()
-        total_profit = df_result["Profit"].sum() if "Profit" in df_result.columns and not df_result[
-            "Profit"].isnull().all() else 0
+        #total_profit = df_result["Profit"].sum() if "Profit" in df_result.columns and not df_result[
+        #    "Profit"].isnull().all() else 0
+        total_profit = df_result["Profit"].sum()
         print(f"Epoch: {epoch}, 総収益: {total_profit}円")
         df_result.to_csv(f"trade_results_{epoch}.csv")
