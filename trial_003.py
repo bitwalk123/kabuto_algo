@@ -1,10 +1,10 @@
 import pandas as pd
 
-from tl_tick_20250819_ppo_lite_gemini import TradingSimulation
+from tl_tick_20250819_ppo_lite_2 import TradingSimulation
 
 if __name__ == "__main__":
-    excel_file = "data/tick_20250818_7011.xlsx"
-    epochs = 10
+    excel_file = "data/tick_20250819_7011.xlsx"
+    epochs = 100
 
     # ティックデータを読み込む
     df = pd.read_excel(excel_file)  # "Time", "Price", "Volume" 列がある想定
@@ -31,4 +31,4 @@ if __name__ == "__main__":
         df_result = sim.finalize()
         # print("Epoch", epoch, "収益", df_result["報酬額"].sum())
         print("Epoch", epoch, "収益", df_result["Reward"].sum())
-        df_result.to_csv(f"trade_results_{epoch}.csv")
+        df_result.to_csv(f"results/trade_results_{epoch:02}.csv")
