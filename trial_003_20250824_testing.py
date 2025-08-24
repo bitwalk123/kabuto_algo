@@ -1,15 +1,15 @@
 import pandas as pd
 
-from rl_tick_20250824_ppo_lite_1 import TradingSimulation
+from rl_tick_20250824_ppo_lite_2 import TradingSimulation
 
 if __name__ == "__main__":
     # 学習対象のティックデータファイル: Time, Price, Volume の 3 列
-    excel_file = "data/tick_20250819_7011.xlsx"
+    excel_file = "data/tick_20250822_7011.xlsx"
     # for learning curve
     df_lc = pd.DataFrame({"Epoch": list(), "Profit": list()})
 
     # 学習回数
-    epochs = 100
+    epochs = 10
 
     # ティックデータを読み込む
     df = pd.read_excel(excel_file)  # "Time", "Price", "Volume" 列がある想定
