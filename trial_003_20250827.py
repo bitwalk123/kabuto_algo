@@ -1,6 +1,6 @@
 import pandas as pd
 
-from rl_tick_20250827_ppo_lite import TradingSimulation
+from rl_tick_20250827_ppo_lite_1 import TradingSimulation
 
 if __name__ == "__main__":
     # 学習対象のティックデータファイル: Time, Price, Volume の 3 列
