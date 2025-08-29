@@ -67,13 +67,16 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+
 # ------------------------- ユーティリティ -------------------------
 
 def _safe_mkdir(path: str):
     os.makedirs(path, exist_ok=True)
 
+
 # 数値安定用 EPS
 EPS = 1e-8
+
 
 # ------------------------- PPO-lite モデル -------------------------
 
@@ -97,10 +100,11 @@ class ActorCritic(nn.Module):
         value = self.critic(z).squeeze(-1)
         return logits, value
 
+
 @dataclass
 class PPOConfig:
     gamma: float = 0.99
-    lam: float = 0.95                # GAE lambda
+    lam: float = 0.95  # GAE lambda
     clip_ratio: float = 0.2
     lr: float = 3e-4
     update_epochs: int = 4
@@ -108,7 +112,8 @@ class PPOConfig:
     entropy_coef: float = 0.01
     value_coef: float = 0.5
     max_grad_norm: float = 0.5
-    scale_unrealized: float = 1e-3   # 含み益の shaping 係数
+    scale_unrealized: float = 1e-3  # 含み益の shaping 係数
+
 
 # ------------------------- 特徴量バッファ（オンライン計算） -------------------------
 
@@ -169,17 +174,14 @@ class FeatureState:
 
         # 価格をランニング標準化
         std = self.running_std()
-        price_z = (price - self.mean) / (std + 1e-6)
+        price_z = (price - self.mean) / (std + 1e-6)  # 標準化
 
-        feats = np.array([
-            price,              # 生
-            price_z,            # 標準化
-            log1p_dv,
-            ma,
-            vol,
-            rsi,
-        ], dtype=np.float32)
-        return feats
+        arr_feature = np.array(
+            [price, price_z, log1p_dv, ma, vol, rsi, ],
+            dtype=np.float32
+        )
+        return arr_feature
+
 
 # ------------------------- 体験バッファ -------------------------
 
@@ -195,17 +197,20 @@ class Trajectory:
     def clear(self):
         self.__init__()
 
+
 # ------------------------- 売買シミュレータ -------------------------
 
 class TradingSimulation:
-    def __init__(self,
-                 n_feat_window: int = 60,
-                 unit: int = 100,
-                 tick: int = 1,
-                 model_dir: str = "models",
-                 results_dir: str = "results",
-                 ppo: PPOConfig = PPOConfig(),
-                 seed: int = 42):
+    def __init__(
+            self,
+            n_feature_window: int = 60,
+            unit: int = 100,  # 売買単位 = 100 株
+            tick: int = 1,  # 呼び値=1円
+            model_dir: str = "models",
+            results_dir: str = "results",
+            ppo: PPOConfig = PPOConfig(),
+            seed: int = 42,
+    ):
         np.random.seed(seed)
         torch.manual_seed(seed)
         _safe_mkdir(model_dir)
@@ -218,18 +223,18 @@ class TradingSimulation:
         self.config = ppo
 
         # 特徴量状態
-        self.fe = FeatureState(n=n_feat_window)
+        self.fe = FeatureState(n=n_feature_window)
 
         # 取引状態
         self.position: Optional[str] = None  # "long" | "short" | None
-        self.entry_price: float = 0.0        # 約定価格（1株あたり）
+        self.entry_price: float = 0.0  # 約定価格（1株あたり）
 
         # 記録用 DF
         self.rows: List[Tuple[float, float, str, float]] = []  # Time, Price, Action(str), Profit
 
         # PPO モデル
         self.obs_dim = 6 + 4  # 6 features + 4 mask bits (行動可否マスク)
-        self.act_dim = 4      # 0:Hold, 1:Buy, 2:Sell, 3:Close
+        self.act_dim = 4  # 0:Hold, 1:Buy, 2:Sell, 3:Close
         self.device = torch.device("cpu")
         self.net = ActorCritic(self.obs_dim, self.act_dim).to(self.device)
         self.optim = optim.Adam(self.net.parameters(), lr=self.config.lr)
@@ -245,10 +250,12 @@ class TradingSimulation:
 
     # ------------------ モデルロード/検証 ------------------
     def _policy_path(self):
-        return os.path.join(self.model_dir, "policy.pth")
+        model_name = "policy_7011_20250828.pth"
+        return os.path.join(self.model_dir, model_name)
 
     def _optim_path(self):
-        return os.path.join(self.model_dir, "optimizer.pth")
+        optim_name = "optimizer_7011_20250828.pth"
+        return os.path.join(self.model_dir, optim_name)
 
     def _load_or_init_model(self):
         policy_path = self._policy_path()
@@ -283,7 +290,7 @@ class TradingSimulation:
     def _save_model(self):
         torch.save(self.net.state_dict(), self._policy_path())
         torch.save(self.optim.state_dict(), self._optim_path())
-        print("モデルを保存しました。")
+        # print("モデルを保存しました。")
 
     # ------------------ 売買ロジック ------------------
     def _action_mask(self) -> np.ndarray:
@@ -396,7 +403,7 @@ class TradingSimulation:
         self._save_model()
 
     # ------------------ API: add / finalize ------------------
-    def add(self, ts: float, price: float, volume: float, force_close: bool=False) -> str:
+    def add(self, ts: float, price: float, volume: float, force_close: bool = False) -> str:
         """ティックを入力しアクション文字列を返す。"""
         # 特徴量計算
         feats = self.fe.compute(price=float(price), volume=float(volume))
@@ -483,6 +490,7 @@ class TradingSimulation:
         self.entry_price = 0.0
 
         return df
+
 
 # -------------- 簡易スモークテスト（直接実行時のみ） --------------
 if __name__ == "__main__":
